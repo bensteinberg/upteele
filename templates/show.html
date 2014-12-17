@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="UTF-8"/>
+  <head>
+    <title>{{ s }}</title>
+  </head>
+<body>
+  <h1>{{ h }}</h1>
+  <ul>
+    {% for sec, rt, min in b %}
+    <li>Bus {{ rt }} is {{ min }} minutes away.</li>
+    {% endfor %}
+  </ul>
+</body>
