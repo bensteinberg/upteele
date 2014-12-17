@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from flask import Flask, render_template
 import xml.etree.ElementTree as ET
 import requests
