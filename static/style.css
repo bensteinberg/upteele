@@ -2,6 +2,11 @@ html, body {
 	font: 36px/45px sans-serif;
 	background: #fff;
 	padding: 3px;
+	padding-left: 30px;
 	color: #000;
 	margin: 0;
 	}
+
+h1 {
+    line-height: 110%;
+}
