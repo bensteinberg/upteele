@@ -1,8 +1,14 @@
 from flask import Flask, render_template, url_for
+from flask_bootstrap import Bootstrap
 import xml.etree.ElementTree as ET
 import requests
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__)
+    Bootstrap(app)
+    return app
+
+app = create_app()
 
 routes = ['87', '88']
 
