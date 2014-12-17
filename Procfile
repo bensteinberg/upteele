@@ -1,1 +1,1 @@
-web: python upteele.py
+web: gunicorn upteele:app --log-file -
