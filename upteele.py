@@ -45,7 +45,7 @@ def get_predictions(xml):
     return output
 
 def show_times(stop, title, heading):
-    url = 'http://webservices.nextbus.comm/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
+    url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
     buses = []
     error = NOERROR
     for rt in routes:
