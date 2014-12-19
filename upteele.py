@@ -39,7 +39,7 @@ def show_times(stop, title, heading):
     for rt in routes:
         r = requests.get(url + rt)
         if r.status_code == requests.codes.ok:
-            for p in get_predictions(r.text)
+            for p in get_predictions(r.text):
                 buses.append((int(p), rt, "%.1f" % (int(p) / 60.0)))
         else:
             return render_template("error.html")
