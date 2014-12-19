@@ -6,9 +6,9 @@
 {% block content %}
     <div class="container">
       <h1>Problem!</h1>
-      <p>
-	Couldn't get NextBus data.  Try again:
-      </p>
+      <div class="alert alert-danger">
+	Couldn't get NextBus data.  Try again.
+      </div>
       <p>
 	<a href="{{ url_for('teele') }}">
 	  <button type="button" class="btn btn-info btn-lg">

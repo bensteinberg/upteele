@@ -37,11 +37,14 @@ def show_times(stop, title, heading):
     url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
     buses = []
     for rt in routes:
-        r = requests.get(url + rt)
-        if r.status_code == requests.codes.ok:
-            for p in get_predictions(r.text):
-                buses.append((int(p), rt, "%.1f" % (int(p) / 60.0)))
-        else:
+        try:
+            r = requests.get(url + rt)
+            if r.status_code == requests.codes.ok:
+                for p in get_predictions(r.text):
+                    buses.append((int(p), rt, "%.1f" % (int(p) / 60.0)))
+            else:
+                return render_template("error.html")
+        except:
             return render_template("error.html")
 
     now = datetime.now(timezone('US/Eastern')).strftime("%Y-%m-%d %H:%M:%S")
