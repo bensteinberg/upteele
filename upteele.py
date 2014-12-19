@@ -37,6 +37,16 @@ def davis():
 def teele():
     return show_times('2577', "Teele", "Inbound to Davis from Broadway @ Holland St - Teele Sq")
 
+def get_errors(error):
+    error_msg = None
+    for e, m in errors.iteritems():
+        if e & error:
+            if error_msg:
+                error_msg = '; '.join([error_msg, m])
+            else:
+                error_msg = m[0].upper() + m[1:]
+    return error_msg
+
 def get_predictions(xml):
     output = []
     root = ET.fromstring(xml)
@@ -64,20 +74,12 @@ def show_times(stop, title, heading):
     if len(buses) == 0 and error == NOERROR:
         error = NOARRIVALS
 
-    error_msg = None
-    for e, m in errors.iteritems():
-        if e & error:
-            if error_msg:
-                error_msg = '; '.join([error_msg, m])
-            else:
-                error_msg = m[0].upper() + m[1:]
-
     return render_template("show.html", 
                            b = sorted(buses), 
                            s = title, 
                            h = heading, 
                            t = now,
-                           e = error_msg
+                           e = get_errors(error)
                        )
 
 if __name__ == '__main__':
