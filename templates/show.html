@@ -6,6 +6,11 @@
 {% block content %}
     <div class="container">
       <h1>{{ h }}</h1>
+      {% if e %}
+      <div class="alert alert-danger">
+	{{ e }}.  Try again.
+      </div>
+      {% endif %}
       <ul>
 	{% for sec, rt, min in b %}
 	<li>Bus {{ rt }} is {{ min }} minutes away.</li>

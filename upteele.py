@@ -14,6 +14,17 @@ app = create_app()
 
 routes = ['87', '88']
 
+NOERROR = 0
+NOARRIVALS = 1
+BADRESPONSE = 2
+NODATA = 4
+
+errors = { 
+    NOARRIVALS:  "no arrivals predicted",
+    BADRESPONSE: "bad response from NextBus",
+    NODATA:      "couldn't get NextBus data"
+}
+
 @app.route('/')
 def hello_world():
     return render_template("index.html")
@@ -34,8 +45,9 @@ def get_predictions(xml):
     return output
 
 def show_times(stop, title, heading):
-    url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
+    url = 'http://webservices.nextbus.comm/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
     buses = []
+    error = NOERROR
     for rt in routes:
         try:
             r = requests.get(url + rt)
@@ -43,17 +55,30 @@ def show_times(stop, title, heading):
                 for p in get_predictions(r.text):
                     buses.append((int(p), rt, "%.1f" % (int(p) / 60.0)))
             else:
-                return render_template("error.html")
+                error = error | BADRESPONSE
         except:
-            return render_template("error.html")
+            error = error | NODATA
 
     now = datetime.now(timezone('US/Eastern')).strftime("%Y-%m-%d %H:%M:%S")
+
+    if len(buses) == 0 and error == NOERROR:
+        error = NOARRIVALS
+
+    error_msg = None
+    for e, m in errors.iteritems():
+        if e & error:
+            if error_msg:
+                error_msg = '; '.join([error_msg, m])
+            else:
+                error_msg = m[0].upper() + m[1:]
 
     return render_template("show.html", 
                            b = sorted(buses), 
                            s = title, 
                            h = heading, 
-                           t = now)
+                           t = now,
+                           e = error_msg
+                       )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
