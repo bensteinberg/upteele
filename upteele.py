@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 import xml.etree.ElementTree as ET
 import requests
 from datetime import datetime
+from pytz import timezone
 
 def create_app():
     app = Flask(__name__)
@@ -44,7 +45,13 @@ def show_times(stop, title, heading):
         else:
             print("Couldn't get data")
 
-    return render_template("show.html", b = sorted(buses), s = title, h = heading, t = datetime.now())
+    now = datetime.now(timezone('US/Eastern')).strftime("%Y-%m-%d %H:%M:%S")
+
+    return render_template("show.html", 
+                           b = sorted(buses), 
+                           s = title, 
+                           h = heading, 
+                           t = now)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
