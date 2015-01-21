@@ -37,14 +37,16 @@ def davis():
 def teele():
     return show_times('2577', "Teele", "Inbound to Davis from Broadway @ Holland St - Teele Sq")
 
-def get_errors(error):
+def get_errors(error_list):
     error_msg = None
-    for e, m in errors.iteritems():
-        if e & error:
-            if error_msg:
-                error_msg = '; '.join([error_msg, m])
-            else:
-                error_msg = m[0].upper() + m[1:]
+    for error in error_list:
+        for e, m in errors.iteritems():
+            if e & error[0]:
+                m = m + (', route ' + error[1] if error[1] else '')
+                if error_msg:
+                    error_msg = '; '.join([error_msg, m])
+                else:
+                    error_msg = m[0].upper() + m[1:]
     return error_msg
 
 def get_predictions(xml):
@@ -57,7 +59,7 @@ def get_predictions(xml):
 def show_times(stop, title, heading):
     url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=predictions&a=mbta&stopId=%s&routeTag=' % stop
     buses = []
-    error = NOERROR
+    error = []
     for rt in routes:
         try:
             r = requests.get(url + rt)
@@ -65,14 +67,14 @@ def show_times(stop, title, heading):
                 for p in get_predictions(r.text):
                     buses.append((int(p), rt, "%.1f" % (int(p) / 60.0)))
             else:
-                error = error | BADRESPONSE
+                error.append((BADRESPONSE, rt))
         except:
-            error = error | NODATA
+            error.append((NODATA, rt))
 
     now = datetime.now(timezone('US/Eastern')).strftime("%Y-%m-%d %H:%M:%S")
 
-    if len(buses) == 0 and error == NOERROR:
-        error = NOARRIVALS
+    if len(buses) == 0 and len(error) == 0:
+        error.append((NOARRIVALS, None))
 
     return render_template("show.html", 
                            b = sorted(buses), 
